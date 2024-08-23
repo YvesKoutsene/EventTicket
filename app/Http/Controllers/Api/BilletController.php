@@ -273,7 +273,6 @@ class BilletController extends Controller
             }
             $billet->save();
 
-            // Générer les tickets
             for ($i = 0; $i < $numberOfTickets; $i++) {
                 $eventPrefix = strtoupper(substr($evenement->nom, 0, 2));
 
@@ -494,9 +493,9 @@ class BilletController extends Controller
     {
         $ticketNumber = $request->input('ticketNumber');
         $refundAccount = $request->input('refundAccount');
-        $payment_service = 'Tmoney';
+        $payment_service = 'Flooz';
         $to_account = "98811314";
-        $secret_code = "45601";
+        $secret_code = "012340";
 
         DB::beginTransaction();
 
@@ -560,5 +559,92 @@ class BilletController extends Controller
         }
     }
 
+    // Fonction permettant de contrôler un ticket
+    public function controlTicket(Request $request) {
+        $ticketNumber = $request->input('ticketNumber');
+
+        DB::beginTransaction();
+
+        try {
+            $userId = Auth::id();
+
+            if (!$userId) {
+                return response()->json(['error' => 'Utilisateur non authentifié.'], 401);
+            }
+
+            $user = Auth::user();
+
+            if ($user->role !== 'organizer') {
+                return response()->json(['error' => 'Vous n\'êtes pas autorisé à scanner un ticket.'], 403);
+            }
+
+            $ticket = Ticket::where('numero', $ticketNumber)->first();
+
+            if (!$ticket) {
+                return response()->json(['error' => 'Ticket invalide.'], 404);
+            }
+
+            $facture = FactureCommande::find($ticket->fac_id);
+            if (!$facture) {
+                return response()->json(['error' => 'Facture non trouvée.'], 404);
+            }
+
+            $billet = Billet::find($facture->bil_id);
+            if (!$billet) {
+                return response()->json(['error' => 'Billet non trouvé.'], 404);
+            }
+
+            $evenement = Evenement::find($billet->eve_id);
+            if (!$evenement) {
+                return response()->json(['error' => 'Événement non trouvé.'], 404);
+            }
+
+            if ($evenement->user_id !== $userId) {
+                return response()->json(['error' => 'Ce ticket n\'est pas associé à l\'un de vos événements.'], 403);
+            }
+
+            if ($ticket->status !== 'actif') {
+                return response()->json(['error' => 'Ce ticket a déjà été utilisé ou expiré.'], 403);
+            }
+
+            $ticket->status = 'utilisé';
+            $ticket->save();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Ticket validé avec succès.'], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            \Log::error('Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Une erreur s\'est produite lors de la validation du ticket.'], 500);
+        }
+    }
+
+    //Fonction renoyant le nombre de ticket scanné
+    public function getScannedTicketsToday(Request $request)
+    {
+        $user = Auth::user();
+        $organizerId = $user->id;
+
+        $todayStart = Carbon::yesterday()->startOfDay();
+        $todayEnd = Carbon::tomorrow()->endOfDay();
+
+        // Compter les tickets utilisés aujourd'hui pour les événements de cet organisateur
+        $ticketsScannedToday = DB::table('tickets')
+            ->join('facture_commandes', 'tickets.fac_id', '=', 'facture_commandes.id')
+            ->join('billets', 'facture_commandes.bil_id', '=', 'billets.id')
+            ->join('evenements', 'billets.eve_id', '=', 'evenements.id')
+            ->where('evenements.user_id', $organizerId)
+            ->where('tickets.status', 'utilisé')
+            ->whereBetween('tickets.updated_at', [$todayStart, $todayEnd])
+            ->count();
+
+        return response()->json([
+            'tickets_scanned_today' => $ticketsScannedToday,
+            'date' => Carbon::today()->toDateString(),
+        ]);
+    }
 
 }

@@ -120,7 +120,7 @@
 
     $userId = Auth::id();
 
-    $rejectedCount = Evenement::where('user_id', $userId)->where('status', 'rejeté')->count();
+    $rejectedCount = Evenement::where('user_id', $userId)->where('status', 'annulé')->count();
     $activeCount = Evenement::where('user_id', $userId)->where('status', 'actif')->count();
     $closedCount = Evenement::where('user_id', $userId)->where('status', 'fermé')->count();
     $finishedCount = Evenement::where('user_id', $userId)->where('status', 'terminé')->count();
@@ -171,17 +171,17 @@
         data: {
             datasets: [{
                 data: [
-                    //{{ $rejectedCount }},
+                    {{ $rejectedCount }},
                 {{ $activeCount }},
     {{ $closedCount }},
     {{ $finishedCount }}
     ],
-    backgroundColor: [/*'#f3545d',*/ '#007bff', '#28a745', '#ffc107'],
+    backgroundColor: ['#f3545d', '#007bff', '#28a745', '#ffc107'],
         borderColor: '#fff',
         borderWidth: 2
     }],
     labels: [
-        //'Rejeté',
+        'Annulé',
         'Actif',
         'Fermé',
         'Terminé'

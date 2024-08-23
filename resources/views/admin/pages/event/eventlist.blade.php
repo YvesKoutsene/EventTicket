@@ -119,7 +119,7 @@ use Carbon\Carbon;
                         <div class="block-pending">{{ ucfirst($ev->status) }}</div>
                         @elseif ($ev->status == 'en cours')
                         <div class="block-pending">{{ ucfirst($ev->status) }}</div>
-                        @elseif ($ev->status == 'rejeté')
+                        @elseif ($ev->status == 'annulé')
                         <div class="block-not-available">{{ ucfirst($ev->status) }}</div>
                         @elseif ($ev->status == 'actif')
                         <div class="block-tracking">{{ ucfirst($ev->status) }}</div>
@@ -136,13 +136,11 @@ use Carbon\Carbon;
                     <div class="body-text">Non publié</div>
                     @endif
                     <div class="list-icon-function">
-                        @if ($ev->status == 'en cours')
                         <div class="">
                             <a href="{{ route('form-showEvent', ['id' => $ev->id]) }}">
                                 <i class="icon-edit tf-button style-1"></i>
                             </a>
                         </div>
-                        @endif
                     </div>
                 </div>
             </li>

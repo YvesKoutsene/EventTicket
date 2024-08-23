@@ -50,6 +50,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/generate/free/ticket', [BilletController::class, 'generateFreeTicketForEvent']);
     Route::get('/getUsertickets', [BilletController::class, 'getUserTicketsWithDetails']);
     Route::put('/refund/ticket', [BilletController::class, 'refundTicket']);
+    Route::post('/control/ticket', [BilletController::class, 'controlTicket']);
+    Route::get('/scanned/tickets/today', [BilletController::class, 'getScannedTicketsToday']);
 
 });
 

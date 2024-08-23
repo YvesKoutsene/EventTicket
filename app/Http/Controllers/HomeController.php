@@ -58,7 +58,7 @@ class HomeController extends Controller
                     ->whereHas('billet', function($query) use ($evenementsIds) {
                         $query->whereIn('eve_id', $evenementsIds);
                     })
-                    ->whereMonth('created_at', Carbon::now()->month)
+                    ->whereMonth('created_at', Carbon::now()->week) //month
                     ->orderBy('created_at', 'desc')
                     ->get();
 

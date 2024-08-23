@@ -27,10 +27,8 @@ class MyEventController extends Controller
             ->get();
 
         foreach ($events as $event) {
-            // Calculer la date de demain basée sur la dateFin de l'événement
             $tomorrowAfterEventEnd = Carbon::parse($event->dateFin)->addDay()->startOfDay();
 
-            // Comparer la date de demain basée sur la dateFin avec la date actuelle
             if (Carbon::now()->greaterThanOrEqualTo($tomorrowAfterEventEnd)) {
                 $event->status = 'terminé';
                 $event->save();
@@ -78,14 +76,12 @@ class MyEventController extends Controller
             'place.min' => 'Le nombre de places doit être strictement supérieur à 0.',
         ]);
 
-        // Retourner en cas d'échec de validation
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        // Gestion de l'image
         $imagePath = null;
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -94,11 +90,9 @@ class MyEventController extends Controller
             $imagePath = $image->storeAs('public/pictures/events', $imageName);
         }
 
-        // Conversion des dates au format Y-m-d avant la création
         $dateDebut = Carbon::createFromFormat('d M Y', $request->dateDebut)->format('Y-m-d');
         $dateFin = Carbon::createFromFormat('d M Y', $request->dateFin)->format('Y-m-d');
 
-        // Initialiser les variables pour placeRestant et quota
         $placeRestant = 0;
         $billetQuota = 0;
 
@@ -145,7 +139,6 @@ class MyEventController extends Controller
             ]);
         }
 
-        // Redirection après la création
         return redirect()->route('myEvent')
             ->with('success', "Votre événement a été créé avec succès.");
     }
@@ -163,10 +156,6 @@ class MyEventController extends Controller
         if ($event->status !== 'inactif') {
             return redirect()->route('myEvent')->with('error', 'Seuls les événements inactifs peuvent être mis à jour.');
         }
-
-        /*if ($event->billets()->exists()) {
-            return redirect()->route('myEvent')->with('error', 'Cet événement est non modifiable car des billets y sont associés.');
-        }*/
 
         $event->dateDebut = Carbon::parse($event->dateDebut)->format('d M Y');
         $event->dateFin = Carbon::parse($event->dateFin)->format('d M Y');
@@ -369,30 +358,6 @@ class MyEventController extends Controller
     }
 
     //Fonction permettant d'annluer un évènement avec ces billets
-    /*public function canceledEvent($id)
-    {
-        $event = Evenement::findOrFail($id);
-
-        if ($event->user_id !== auth()->id()) {
-            return redirect()->route('myEvent')->with('error', 'Vous n\'êtes pas autorisé à annuler cet événement.');
-        }
-
-        if ($event->status !== 'actif') {
-            return redirect()->route('myEvent')->with('error', 'Seuls les événements actifs peuvent être annulés.');
-        }
-
-        $event->status = 'annulé';
-        $event->save();
-
-        foreach ($event->billets as $billet) {
-            $billet->status = 'annulé';
-            $billet->save();
-        }
-
-        return redirect()->route('myEvent')->with('success', 'Votre événement a été annulé avec succès.');
-    }*/
-
-
     public function canceledEvent($id)
     {
         // Récupérer l'événement

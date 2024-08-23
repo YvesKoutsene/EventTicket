@@ -96,15 +96,15 @@ class AuthController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Votre compte est inactif. Veuillez contacter l\'administrateur.'
-            ], 403); // Forbidden
+            ], 403);
         }
 
-        /*if ($user->role === 'organizer') {
+        if ($user->role === 'admin') {
             return response()->json([
                 'status' => false,
                 'message' => 'Vous n\'êtes pas autorisé à vous connecter avec ce compte.'
             ], 403); // Forbidden
-        }*/
+        }
 
         return response()->json([
             'status' => true,
