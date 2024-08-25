@@ -2,11 +2,10 @@ services:
   - type: web
     name: EventTicket
     env: php
-    plan: free
     buildCommand: |
-      curl -sS https://getcomposer.org/installer | php
-      php composer.phar install --no-dev --optimize-autoloader
-      php artisan key:generate
+        curl -sS https://getcomposer.org/installer | php
+        php composer.phar install --no-dev --optimize-autoloader
+        php artisan key:generate
     startCommand: php artisan serve --host 0.0.0.0 --port 10000
     envVars:
       - key: APP_ENV
