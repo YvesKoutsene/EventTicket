@@ -13,8 +13,6 @@ services:
         value: production
       - key: APP_DEBUG
         value: false
-      - key: APP_KEY
-        value: 'base64:gUJ3azbSt/Sju6mI0+BLcftbxFxcYgmMFeH+MKYP4YM='
       - key: DB_CONNECTION
         value: 'mysql'
       - key: DB_HOST
