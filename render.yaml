@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: EventTicket
+    env: php
+    plan: free
+    buildCommand: |
+      curl -sS https://getcomposer.org/installer | php
+      php composer.phar install --no-dev --optimize-autoloader
+      php artisan key:generate
+    startCommand: php artisan serve --host 0.0.0.0 --port 10000
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+      - key: APP_KEY
+        value: 'base64:gUJ3azbSt/Sju6mI0+BLcftbxFxcYgmMFeH+MKYP4YM='
+      - key: DB_CONNECTION
+        value: 'mysql'
+      - key: DB_HOST
+        value: 'eventticket-lenoirkevin.f.aivencloud.com'
+      - key: DB_DATABASE
+        value: 'eventticket'
+      - key: DB_USERNAME
+        value: 'avnadmin'
+      - key: DB_PASSWORD
+        value: 'AVNS_sYZKbfzKM0IMds7EAIL'
