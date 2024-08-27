@@ -178,7 +178,7 @@ use Carbon\Carbon;
                                         </div>
                                     @elseif ($event->status == 'actif')
                                     <div class="form-button-action">
-                                        <form id="delete-event-form-{{ $event->id }}" action="{{ route('canceledMyEvent', $event->id) }}" method="POST" style="display: none;">
+                                        <form id="canceled-event-form-{{ $event->id }}" action="{{ route('canceledMyEvent', $event->id) }}" method="POST" style="display: none;">
                                             @csrf
                                             @method('PUT')
                                         </form>

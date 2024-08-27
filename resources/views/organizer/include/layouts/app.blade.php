@@ -529,9 +529,9 @@
 
     //Fonction alerte d'annulation de billet
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.alert-delete-event').forEach(function(button) {
+        document.querySelectorAll('.alert-canceled-event').forEach(function(button) {
             button.addEventListener('click', function() {
-                var eventId = this.getAttribute('data-event02-id');
+                var eventId = this.getAttribute('data-canceled-event-id');
                 swal({
                     title: 'Êtes-vous sûr?',
                     text: "Cela annulera également les billets de cet événement",
@@ -549,7 +549,7 @@
                     }
                 }).then((willDelete) => {
                     if (willDelete) {
-                        var deleteForm = document.getElementById('delete-event-form-' + eventId);
+                        var deleteForm = document.getElementById('canceled-event-form-' + eventId);
                         deleteForm.submit();
                     } else {
                         swal("Votre évènement est en sûreté!", {
