@@ -1,5 +1,7 @@
 # Plateforme de Billetterie - Yentim Solux
 
+---
+
 ## Contexte
 Projet développé lors de mon **stage de fin de licence** au **Cabinet Yentim Solux** (Lomé, Togo) de mai à août 2024.  
 L'objectif était de créer une **plateforme complète de billetterie** avec deux interfaces :
